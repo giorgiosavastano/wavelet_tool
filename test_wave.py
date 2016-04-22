@@ -13,6 +13,7 @@ lista.sort()
 for k in xrange(len(lista)):
 
 	# READ THE DATA
+	time = np.genfromtxt( lista[k], skip_header=1, usecols=0 )  # input SST time series)  # input SST time series
 	sst1 = np.genfromtxt( lista[k], skip_header=1, usecols=1 )  # input SST time series)  # input SST time series
 
 	#----------C-O-M-P-U-T-A-T-I-O-N------S-T-A-R-T-S------H-E-R-E------------------------------------------------------
@@ -23,7 +24,11 @@ for k in xrange(len(lista)):
 	variance = np.std(sst1, ddof=1) ** 2
 	sst = (sst1 - np.mean(sst1)) / np.std(sst1, ddof=1)
 	n = len(sst)
-	dt = 30.0
+	dt = 60.0
+	i = 0
+	while dt > 30:
+	   dt = time[i+1]-time[i]
+	   i += 1 
 	time = np.arange(len(sst)) * dt  + 28800.0 # construct time array 
 	xlim = ([28800.0 , 36600.0])  # plotting range
 	pad = 1  # pad the time series with zeroes (recommended)
