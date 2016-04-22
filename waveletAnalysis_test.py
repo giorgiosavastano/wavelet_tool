@@ -18,7 +18,8 @@ __author__ = 'Evgeniya Predybaylo'
 # ------------------------------------------------------------------------------------------------------------------
 
 # READ THE DATA
-sst1 = np.genfromtxt('ainp_4_test.txt', skip_header=1, usecols=1)  # input SST time series)  # input SST time series
+time = np.genfromtxt('yeep_10_test.txt', skip_header=1, usecols=0)  # time series
+sst1 = np.genfromtxt('yeep_10_test.txt', skip_header=1, usecols=1)  # input SST time series)  # input SST time series
 tsunami   = 8*60*60+30*60 
 
 #----------C-O-M-P-U-T-A-T-I-O-N------S-T-A-R-T-S------H-E-R-E------------------------------------------------------
@@ -29,7 +30,7 @@ tsunami   = 8*60*60+30*60
 variance = np.std(sst1, ddof=1) ** 2
 sst = (sst1 - np.mean(sst1)) / np.std(sst1, ddof=1)
 n = len(sst)
-dt = 30.0
+dt = time[1] - time[0]
 time = np.arange(len(sst)) * dt  + 28800.0 # construct time array 
 xlim = ([28800.0 , 36600.0])  # plotting range
 pad = 1  # pad the time series with zeroes (recommended)
