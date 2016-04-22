@@ -1,7 +1,6 @@
 import numpy as np
 from waveletFunctions import wavelet, wave_signif
 import matplotlib.pylab as plt
-import matplotlib
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import glob
 
@@ -9,11 +8,15 @@ import glob
 
 lista = glob.glob( '*_test.txt' )
 lista.sort()
+dt_list = []
+periods_general = []
+maxs_general = []
 
 for k in xrange(len(lista)):
 
 	# READ THE DATA
 	time = np.genfromtxt( lista[k], skip_header=1, usecols=0 )  # input SST time series)  # input SST time series
+
 	sst1 = np.genfromtxt( lista[k], skip_header=1, usecols=1 )  # input SST time series)  # input SST time series
 
 	#----------C-O-M-P-U-T-A-T-I-O-N------S-T-A-R-T-S------H-E-R-E------------------------------------------------------
@@ -28,7 +31,8 @@ for k in xrange(len(lista)):
 	i = 0
 	while dt > 30:
 	   dt = time[i+1]-time[i]
-	   i += 1 
+	   i += 1
+	dt_list.append(dt)  
 	time = np.arange(len(sst)) * dt  + 28800.0 # construct time array 
 	xlim = ([28800.0 , 36600.0])  # plotting range
 	pad = 1  # pad the time series with zeroes (recommended)
@@ -47,22 +51,13 @@ for k in xrange(len(lista)):
 	sig95 = signif[:, np.newaxis].dot(np.ones(n)[np.newaxis, :])  # expand signif --> (J+1)x(N) array
 	sig95 = power / sig95  # where ratio > 1, power is significant
 
-	period_list = []
-	time_list = []
-	max_list = []
-	len_list = []
+	max_list_power = []
+	
+	for i in xrange( len( power ) ):
+	        max_list_power.append( np.max( power[i] ) )
 
-	for i in xrange( len( sig95 ) ):
-	    mask = ( sig95[i] > 1 )
-	    if len( sig95[i][mask] ) == 0.0:
-	        continue
-	    else:
-	        period_list.append( period[i] )
-	        time_list.append( time[mask] )
-	        max_list.append( np.max( sig95[i] ) )
-	        len_list.append( len( sig95[i][mask]))
-
-	f = open( lista[k][:-3] + 'dat' , 'w' )
-	for i in xrange( len(max_list) ):
-	    f.write( str( period_list[i] ) + '\t' + str( max_list[i] ) + '\t' + str( len_list[i] ) + '\n' )
-	f.close()
+        inde = np.argmax( max_list_power )
+        periods_general.append( period[inde] )
+        
+        
+	
